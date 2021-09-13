@@ -14,6 +14,7 @@ exports.sendAllWorkersList = async (req, res) => {
   let start = req.body.start ? req.body.start : 0;
   let limit = req.body.limit ? req.body.limit : 10;
   let sort = req.body.sort;
+  let classname = req.body.class;
   let findCondition = {};
   let sortCondition = {};
 
@@ -23,14 +24,14 @@ exports.sendAllWorkersList = async (req, res) => {
   }
 
   try {
-    head = await header.find({ class: "workerList" }).exec();
+    head = await header.find({ class: classname }).exec();
   } catch (err) {
     return res.status(400).json({
       error: "Erorr in header",
     });
   }
   try {
-    filt = await filter.find({ class: "workerList" }).exec();
+    filt = await filter.find({ class: classname }).exec();
   } catch (err) {
     return res.status(400).json({
       error: "Erorr in filter",
@@ -51,7 +52,7 @@ exports.sendAllWorkersList = async (req, res) => {
     });
   }
   customObject = {
-    class: "workerList",
+    class: classname,
     headerToShow: head[0],
     filter: filt,
     metaData: allData.length,
