@@ -2,7 +2,7 @@ module.exports = (app) => {
   const api = require("../controller/table.controller");
   var router = require("express").Router();
 
-  router.get("/", api.sendAllWorkersList);
+  router.post("/", api.sendAllWorkersList);
 
   app.use("/api/customTable", router);
 };
