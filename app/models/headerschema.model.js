@@ -5,7 +5,7 @@ module.exports = (mongoose) => {
       mongoose.Schema(
         {
           class: String,
-          headerToShow: [],
+          headertoShow: [],
         },
         { timestamps: true }
       )

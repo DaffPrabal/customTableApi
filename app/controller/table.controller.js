@@ -6,10 +6,22 @@ const worker = db.workers;
 exports.sendAllWorkersList = async (req, res) => {
   let head;
   let filt;
-  let tableData;
-  let finalData = [];
-  let projection = { name: 1, status: 1, description: 1, "joining Date": 1 };
-  let condition = {};
+  let allData;
+  // if (!req.body.class) {
+  //   res.status(400).send({ message: "Content can not be empty!" });
+  //   return;
+  // }
+  let start = req.body.start ? req.body.start : 0;
+  let limit = req.body.limit ? req.body.limit : 10;
+  let sort = req.body.sort;
+  let findCondition = {};
+  let sortCondition = {};
+
+  if (sort) {
+  } else {
+    sortCondition = { "joining Date.value": 1 };
+  }
+
   try {
     head = await header.find({ class: "workerList" }).exec();
   } catch (err) {
@@ -25,7 +37,13 @@ exports.sendAllWorkersList = async (req, res) => {
     });
   }
   try {
-    tableData = await worker.find(condition, projection).exec();
+    allData = await worker.find(findCondition).sort(sortCondition).exec();
+    tableData = await worker
+      .find(findCondition)
+      .sort(sortCondition)
+      .skip(start)
+      .limit(limit)
+      .exec();
   } catch (err) {
     console.log(err);
     return res.status(400).json({
@@ -36,6 +54,7 @@ exports.sendAllWorkersList = async (req, res) => {
     class: "workerList",
     headerToShow: head[0],
     filter: filt,
+    metaData: allData.length,
     tableData: tableData,
   };
   res.json(customObject);
