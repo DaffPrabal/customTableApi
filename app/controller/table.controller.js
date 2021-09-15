@@ -4,7 +4,6 @@ const filter = db.filter;
 const worker = db.workers;
 
 exports.sendAllWorkersList = async (req, res) => {
-  console.log(req);
   let head;
   let filt;
   let allData;
@@ -20,34 +19,35 @@ exports.sendAllWorkersList = async (req, res) => {
   let findCondition = {};
   let sortCondition = {};
   const arr = [];
-  if (findFilter) {
+  if (req.body.filter.length) {
     for (let i = 0; i < findFilter.length; i++) {
       let cond = findFilter[i];
-      console.log(cond);
       let conditionHeader = cond.header;
       let conditionValue = cond.value;
-      let obj = {};
-      if (conditionValue != true || conditionValue != false) {
-        obj[conditionHeader] = {
-          $regex: new RegExp(conditionValue),
-          $options: "i",
-        };
-      } else {
-        obj[conditionHeader] = {
-          conditionValue,
-        };
-      }
+      console.log(conditionValue);
+      if (conditionValue !== "") {
+        let obj = {};
+        if (conditionValue != true && conditionValue != false) {
+          obj[conditionHeader] = {
+            $regex: new RegExp(conditionValue),
+            $options: "i",
+          };
+        } else if (conditionValue == true || conditionValue == false) {
+          let temph = conditionHeader + ".value";
+          obj[temph] = conditionValue;
+        } else {
+        }
 
-      arr.push(obj);
+        arr.push(obj);
+      }
     }
   }
-
-  findCondition = findFilter
+  findCondition = req.body.filter.length
     ? {
         $or: arr,
       }
     : {};
-
+  console.log(findCondition);
   if (sort.property) {
     let order = sort.order === "asc" ? 1 : -1;
     sortCondition[sort.property] = order;
