@@ -27,10 +27,17 @@ exports.sendAllWorkersList = async (req, res) => {
       let conditionHeader = cond.header;
       let conditionValue = cond.value;
       let obj = {};
-      obj[conditionHeader] = {
-        $regex: new RegExp(conditionValue),
-        $options: "i",
-      };
+      if (conditionValue != true || conditionValue != false) {
+        obj[conditionHeader] = {
+          $regex: new RegExp(conditionValue),
+          $options: "i",
+        };
+      } else {
+        obj[conditionHeader] = {
+          conditionValue,
+        };
+      }
+
       arr.push(obj);
     }
   }
