@@ -8,38 +8,16 @@ exports.sendAllWorkersList = async (req, res) => {
   let head;
   let filt;
   let allData;
-  if (!req.body.class) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
-  }
+  // if (!req.body.class) {
+  //   res.status(400).send({ message: "Content can not be empty!" });
+  //   return;
+  // }
   let start = req.body.start ? req.body.start : 0;
   let limit = req.body.limit ? req.body.limit : 10;
   let sort = req.body.sort;
-  let findFilter = req.body.filter;
   let classname = req.body.class;
   let findCondition = {};
   let sortCondition = {};
-  const arr = [];
-  if (findFilter) {
-    for (let i = 0; i < findFilter.length; i++) {
-      let cond = findFilter[i];
-      console.log(cond);
-      let conditionHeader = cond.header;
-      let conditionValue = cond.value;
-      let obj = {};
-      obj[conditionHeader] = {
-        $regex: new RegExp(conditionValue),
-        $options: "i",
-      };
-      arr.push(obj);
-    }
-  }
-
-  findCondition = findFilter
-    ? {
-        $or: arr,
-      }
-    : {};
 
   if (sort.property) {
     let order = sort.order === "asc" ? 1 : -1;
