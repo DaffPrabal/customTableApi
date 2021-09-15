@@ -4,30 +4,24 @@ const filter = db.filter;
 const worker = db.workers;
 
 exports.sendAllWorkersList = async (req, res) => {
+  console.log(req);
   let head;
   let filt;
   let allData;
+  // if (!req.body.class) {
+  //   res.status(400).send({ message: "Content can not be empty!" });
+  //   return;
+  // }
   let start = req.body.start ? req.body.start : 0;
   let limit = req.body.limit ? req.body.limit : 10;
-  let sortProperty = req.body.sort.property;
-  let sortOrder = req.body.sort.order;
+  let sort = req.body.sort;
   let classname = req.body.class;
   let findCondition = {};
   let sortCondition = {};
-  if (!req.body.class) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
-  } else {
-    findCondition["class"] = classname;
-  }
 
-  if (sortProperty && sortOrder) {
-    let temp = sortProperty + ".value";
-    if (sortOrder === "asc") {
-      sortCondition[temp] = 1;
-    } else {
-      sortCondition[temp] = -1;
-    }
+  if (sort.property) {
+    let order = sort.order === "asc" ? 1 : -1;
+    sortCondition[sort.property] = order;
   } else {
     sortCondition = { "joining Date.value": 1 };
   }
@@ -62,7 +56,7 @@ exports.sendAllWorkersList = async (req, res) => {
   }
   customObject = {
     class: classname,
-    headerToShow: head,
+    headerToShow: head[0],
     filter: filt,
     metaData: allData.length,
     tableData: tableData,
