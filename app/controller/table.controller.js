@@ -71,13 +71,23 @@ exports.sendAllWorkersList = async (req, res) => {
     });
   }
   try {
-    allData = await classname.find(findCondition).sort(sortCondition).exec();
-    tableData = await classname
-      .find(findCondition)
-      .sort(sortCondition)
-      .skip(start)
-      .limit(limit)
-      .exec();
+    if (classname === "workerList") {
+      allData = await worker.find(findCondition).sort(sortCondition).exec();
+      tableData = await worker
+        .find(findCondition)
+        .sort(sortCondition)
+        .skip(start)
+        .limit(limit)
+        .exec();
+    } else if (classname === "userList") {
+      allData = await user.find(findCondition).sort(sortCondition).exec();
+      tableData = await user
+        .find(findCondition)
+        .sort(sortCondition)
+        .skip(start)
+        .limit(limit)
+        .exec();
+    }
   } catch (err) {
     console.log(err);
     return res.status(400).json({
