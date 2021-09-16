@@ -2,6 +2,7 @@ const db = require("../models");
 const header = db.header;
 const filter = db.filter;
 const worker = db.workers;
+const user = db.user;
 
 exports.sendAllWorkersList = async (req, res) => {
   let head;
@@ -28,7 +29,8 @@ exports.sendAllWorkersList = async (req, res) => {
       if (conditionValue !== "") {
         let obj = {};
         if (conditionValue != true && conditionValue != false) {
-          obj[conditionHeader] = {
+          let temphe = conditionHeader + ".value";
+          obj[temphe] = {
             $regex: new RegExp(conditionValue),
             $options: "i",
           };
@@ -37,7 +39,6 @@ exports.sendAllWorkersList = async (req, res) => {
           obj[temph] = conditionValue;
         } else {
         }
-
         arr.push(obj);
       }
     }
@@ -70,8 +71,8 @@ exports.sendAllWorkersList = async (req, res) => {
     });
   }
   try {
-    allData = await worker.find(findCondition).sort(sortCondition).exec();
-    tableData = await worker
+    allData = await classname.find(findCondition).sort(sortCondition).exec();
+    tableData = await classname
       .find(findCondition)
       .sort(sortCondition)
       .skip(start)

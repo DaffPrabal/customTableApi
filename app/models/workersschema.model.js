@@ -1,13 +1,13 @@
 module.exports = (mongoose) => {
   {
     const Workers = mongoose.model(
-      "workers",
+      "workerList",
       mongoose.Schema(
         {
-          name: [],
-          status: [],
-          description: [],
-          "joining Date": [],
+          name: {},
+          status: {},
+          description: {},
+          "joining Date": {},
         },
         { timestamps: true }
       )
