@@ -20,6 +20,7 @@ exports.sendAllWorkersList = async (req, res) => {
   let findCondition = {};
   let sortCondition = {};
   const arr = [];
+  const regarr = [];
   if (req.body.filter.length) {
     for (let i = 0; i < findFilter.length; i++) {
       let cond = findFilter[i];
@@ -32,11 +33,13 @@ exports.sendAllWorkersList = async (req, res) => {
           conditionValue != false &&
           conditionHeader.indexOf("Date") < 1
         ) {
+          let regobj = {};
           let temphe = conditionHeader + ".value";
-          obj[temphe] = {
+          regobj[temphe] = {
             $regex: new RegExp(conditionValue),
             $options: "i",
           };
+          regarr.push(regobj);
         } else if (conditionValue == true || conditionValue == false) {
           let temph = conditionHeader + ".value";
           obj[temph] = conditionValue;
@@ -48,9 +51,13 @@ exports.sendAllWorkersList = async (req, res) => {
           };
         }
         arr.push(obj);
+        if (regarr.length) {
+          arr.push({ $or: regarr });
+        }
       }
     }
   }
+  console.log(arr);
   findCondition = req.body.filter.length
     ? {
         $and: arr,
@@ -101,6 +108,7 @@ exports.sendAllWorkersList = async (req, res) => {
       error: "Erorr in list",
     });
   }
+  console.log(tableData);
   customObject = {
     class: classname,
     headerToShow: head[0],
