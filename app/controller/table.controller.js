@@ -16,7 +16,6 @@ exports.sendAllWorkersList = async (req, res) => {
   let limit = req.body.limit ? req.body.limit : 10;
   let sort = req.body.sort;
   let findFilter = req.body.filter;
-  console.log(req.body);
   let classname = req.body.class;
   let findCondition = {};
   let sortCondition = {};
@@ -31,7 +30,7 @@ exports.sendAllWorkersList = async (req, res) => {
         if (
           conditionValue != true &&
           conditionValue != false &&
-          conditionHeader.indexOf("date") < 1
+          conditionHeader.indexOf("Date") < 1
         ) {
           let temphe = conditionHeader + ".value";
           obj[temphe] = {
@@ -41,24 +40,22 @@ exports.sendAllWorkersList = async (req, res) => {
         } else if (conditionValue == true || conditionValue == false) {
           let temph = conditionHeader + ".value";
           obj[temph] = conditionValue;
-        } else if (conditionHeader.indexOf("date")) {
+        } else if (conditionHeader.indexOf("Date")) {
           let temp = conditionHeader + ".value";
           obj[temp] = {
-            $gte: ISODate(conditionValue.startDate),
-            $lte: ISODate(conditionValue.endDate),
+            $gte: new Date(conditionValue.startDate),
+            $lte: new Date(conditionValue.endDate),
           };
         }
         arr.push(obj);
       }
     }
   }
-
   findCondition = req.body.filter.length
     ? {
         $or: arr,
       }
     : {};
-  console.log(findCondition);
   if (sort.property) {
     let order = sort.order === "asc" ? 1 : -1;
     sortCondition[sort.property] = order;
