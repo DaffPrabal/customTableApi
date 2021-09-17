@@ -53,7 +53,7 @@ exports.sendAllWorkersList = async (req, res) => {
   }
   findCondition = req.body.filter.length
     ? {
-        $or: arr,
+        $and: arr,
       }
     : {};
   if (sort.property) {
