@@ -16,6 +16,7 @@ exports.sendAllWorkersList = async (req, res) => {
   let limit = req.body.limit ? req.body.limit : 10;
   let sort = req.body.sort;
   let findFilter = req.body.filter;
+  console.log(req.body);
   let classname = req.body.class;
   let findCondition = {};
   let sortCondition = {};
@@ -25,10 +26,13 @@ exports.sendAllWorkersList = async (req, res) => {
       let cond = findFilter[i];
       let conditionHeader = cond.header;
       let conditionValue = cond.value;
-      console.log(conditionValue);
       if (conditionValue !== "") {
         let obj = {};
-        if (conditionValue != true && conditionValue != false) {
+        if (
+          conditionValue != true &&
+          conditionValue != false &&
+          conditionHeader.indexOf("date") < 1
+        ) {
           let temphe = conditionHeader + ".value";
           obj[temphe] = {
             $regex: new RegExp(conditionValue),
@@ -37,12 +41,18 @@ exports.sendAllWorkersList = async (req, res) => {
         } else if (conditionValue == true || conditionValue == false) {
           let temph = conditionHeader + ".value";
           obj[temph] = conditionValue;
-        } else {
+        } else if (conditionHeader.indexOf("date")) {
+          let temp = conditionHeader + ".value";
+          obj[temp] = {
+            $gte: ISODate(conditionValue.startDate),
+            $lte: ISODate(conditionValue.endDate),
+          };
         }
         arr.push(obj);
       }
     }
   }
+
   findCondition = req.body.filter.length
     ? {
         $or: arr,
